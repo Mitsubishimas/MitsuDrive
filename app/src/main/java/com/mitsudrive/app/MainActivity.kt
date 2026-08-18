@@ -6,7 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -14,13 +14,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+import com.mitsudrive.app.navigation.DriveNavigation
+import com.mitsudrive.app.navigation.Screen
 import com.mitsudrive.app.ui.theme.MitsuDriveTheme
+import com.mitsudrive.core.ui.theme.*
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        // Устанавливаем Splash Screen
         installSplashScreen()
-        
         super.onCreate(savedInstanceState)
         
         setContent {
@@ -33,33 +37,141 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MainScreen() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFF060912)),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = "MitsuDrive",
-                fontSize = 48.sp,
-                fontWeight = FontWeight.Black,
-                color = Color(0xFF00D2FF)
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = "Сообщество автомобилистов",
-                fontSize = 16.sp,
-                color = Color(0xFF6B7394)
-            )
-            Spacer(modifier = Modifier.height(24.dp))
-            Text(
-                text = "Модульная архитектура готова",
-                fontSize = 14.sp,
-                color = Color(0xFFE0E6F0)
-            )
+    val navController = rememberNavController()
+    
+    Scaffold(
+        containerColor = DarkBackground,
+        bottomBar = {
+            BottomNavigationBar(navController)
         }
+    ) { paddingValues ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
+            DriveNavigation(navController = navController)
+        }
+    }
+}
+
+@Composable
+fun BottomNavigationBar(navController: NavHostController) {
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+    
+    NavigationBar(
+        containerColor = CardBackground,
+        tonalElevation = 0.dp
+    ) {
+        NavigationBarItem(
+            selected = currentRoute == Screen.Feed.route,
+            onClick = {
+                navController.navigate(Screen.Feed.route) {
+                    popUpTo(navController.graph.startDestinationId) {
+                        saveState = true
+                    }
+                    launchSingleTop = true
+                    restoreState = true
+                }
+            },
+            icon = { Text("📰", fontSize = 20.sp) },
+            label = { Text("Лента", fontSize = 10.sp) },
+            colors = NavigationBarItemDefaults.colors(
+                selectedIconColor = NeonBlue,
+                selectedTextColor = NeonBlue,
+                unselectedIconColor = TextSecondary,
+                unselectedTextColor = TextSecondary,
+                indicatorColor = NeonBlue.copy(alpha = 0.1f)
+            )
+        )
+        
+        NavigationBarItem(
+            selected = currentRoute == Screen.Map.route,
+            onClick = {
+                navController.navigate(Screen.Map.route) {
+                    popUpTo(navController.graph.startDestinationId) {
+                        saveState = true
+                    }
+                    launchSingleTop = true
+                    restoreState = true
+                }
+            },
+            icon = { Text("🗺️", fontSize = 20.sp) },
+            label = { Text("Карта", fontSize = 10.sp) },
+            colors = NavigationBarItemDefaults.colors(
+                selectedIconColor = NeonBlue,
+                selectedTextColor = NeonBlue,
+                unselectedIconColor = TextSecondary,
+                unselectedTextColor = TextSecondary,
+                indicatorColor = NeonBlue.copy(alpha = 0.1f)
+            )
+        )
+        
+        NavigationBarItem(
+            selected = currentRoute == Screen.Chats.route,
+            onClick = {
+                navController.navigate(Screen.Chats.route) {
+                    popUpTo(navController.graph.startDestinationId) {
+                        saveState = true
+                    }
+                    launchSingleTop = true
+                    restoreState = true
+                }
+            },
+            icon = { Text("💬", fontSize = 20.sp) },
+            label = { Text("Чаты", fontSize = 10.sp) },
+            colors = NavigationBarItemDefaults.colors(
+                selectedIconColor = NeonBlue,
+                selectedTextColor = NeonBlue,
+                unselectedIconColor = TextSecondary,
+                unselectedTextColor = TextSecondary,
+                indicatorColor = NeonBlue.copy(alpha = 0.1f)
+            )
+        )
+        
+        NavigationBarItem(
+            selected = currentRoute == Screen.Garage.route,
+            onClick = {
+                navController.navigate(Screen.Garage.route) {
+                    popUpTo(navController.graph.startDestinationId) {
+                        saveState = true
+                    }
+                    launchSingleTop = true
+                    restoreState = true
+                }
+            },
+            icon = { Text("🚗", fontSize = 20.sp) },
+            label = { Text("Гараж", fontSize = 10.sp) },
+            colors = NavigationBarItemDefaults.colors(
+                selectedIconColor = NeonBlue,
+                selectedTextColor = NeonBlue,
+                unselectedIconColor = TextSecondary,
+                unselectedTextColor = TextSecondary,
+                indicatorColor = NeonBlue.copy(alpha = 0.1f)
+            )
+        )
+        
+        NavigationBarItem(
+            selected = currentRoute == Screen.Sos.route,
+            onClick = {
+                navController.navigate(Screen.Sos.route) {
+                    popUpTo(navController.graph.startDestinationId) {
+                        saveState = true
+                    }
+                    launchSingleTop = true
+                    restoreState = true
+                }
+            },
+            icon = { Text("🆘", fontSize = 20.sp) },
+            label = { Text("SOS", fontSize = 10.sp) },
+            colors = NavigationBarItemDefaults.colors(
+                selectedIconColor = AccentRed,
+                selectedTextColor = AccentRed,
+                unselectedIconColor = TextSecondary,
+                unselectedTextColor = TextSecondary,
+                indicatorColor = AccentRed.copy(alpha = 0.1f)
+            )
+        )
     }
 }
