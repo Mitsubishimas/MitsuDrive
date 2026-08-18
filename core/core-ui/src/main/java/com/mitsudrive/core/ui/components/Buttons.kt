@@ -6,7 +6,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -29,7 +28,7 @@ fun NeonButton(
         modifier = modifier
             .height(Dimens.button_height)
             .fillMaxWidth(),
-        enabled = enabled,
+        enabled = enabled && !loading,
         shape = RoundedCornerShape(Dimens.radius_round),
         colors = ButtonDefaults.buttonColors(
             containerColor = NeonBlue,
@@ -106,6 +105,7 @@ fun DangerButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
+    loading: Boolean = false,
     icon: @Composable (() -> Unit)? = null
 ) {
     Button(
@@ -113,7 +113,7 @@ fun DangerButton(
         modifier = modifier
             .height(Dimens.button_height)
             .fillMaxWidth(),
-        enabled = enabled,
+        enabled = enabled && !loading,
         shape = RoundedCornerShape(Dimens.radius_round),
         colors = ButtonDefaults.buttonColors(
             containerColor = AccentRed,
@@ -122,16 +122,24 @@ fun DangerButton(
             disabledContentColor = TextPrimary.copy(alpha = 0.5f)
         )
     ) {
-        if (icon != null) {
-            icon()
-            Spacer(modifier = Modifier.width(Dimens.spacing_sm))
+        if (loading) {
+            CircularProgressIndicator(
+                modifier = Modifier.size(20.dp),
+                color = TextPrimary,
+                strokeWidth = 2.dp
+            )
+        } else {
+            if (icon != null) {
+                icon()
+                Spacer(modifier = Modifier.width(Dimens.spacing_sm))
+            }
+            Text(
+                text = text,
+                fontWeight = FontWeight.Bold,
+                fontSize = 14.sp,
+                letterSpacing = 0.5.sp
+            )
         }
-        Text(
-            text = text,
-            fontWeight = FontWeight.Bold,
-            fontSize = 14.sp,
-            letterSpacing = 0.5.sp
-        )
     }
 }
 
