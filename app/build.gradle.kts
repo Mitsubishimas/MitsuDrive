@@ -1,4 +1,7 @@
 plugins {
+    id("com.google.gms.google-services")
+}
+plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.dagger.hilt.android")
@@ -137,3 +140,8 @@ dependencies {
 
 // Добавляем в dependencies если ещё не добавлено
 // implementation("androidx.core:core-splashscreen:1.0.1")
+
+// Firebase
+// implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
+// implementation("com.google.firebase:firebase-messaging-ktx")
+// implementation("com.google.firebase:firebase-analytics-ktx")
