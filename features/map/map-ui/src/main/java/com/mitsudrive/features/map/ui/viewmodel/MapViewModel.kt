@@ -27,9 +27,13 @@ class MapViewModel(
     private val _uiState = MutableStateFlow(MapUiState())
     val uiState: StateFlow<MapUiState> = _uiState.asStateFlow()
     
+    // Текущие границы карты
+    private var currentBounds: Pair<Pair<Double, Double>, Pair<Double, Double>>? = null
+    
     init {
         observeLocation()
-        loadEvents()
+        observeEvents()
+        startLocationUpdates()
     }
     
     private fun observeLocation() {
@@ -43,14 +47,14 @@ class MapViewModel(
         }
     }
     
-    private fun loadEvents() {
+    private fun observeEvents() {
         viewModelScope.launch {
-            // Загружаем события для Москвы по умолчанию
+            // Наблюдаем за событиями в широкой области (Москва)
             mapRepository.observeEvents(
-                minLat = 55.5,
-                maxLat = 56.0,
-                minLng = 37.3,
-                maxLng = 38.0
+                minLat = 55.3,
+                maxLat = 56.1,
+                minLng = 37.2,
+                maxLng = 38.2
             ).collect { events ->
                 _uiState.update { it.copy(events = events) }
             }
@@ -80,7 +84,11 @@ class MapViewModel(
                     lng = location.longitude,
                     description = description
                 )
-            ).onFailure { e ->
+            ).onSuccess {
+                _uiState.update { state ->
+                    state.copy(isCreatingEvent = false)
+                }
+            }.onFailure { e ->
                 _uiState.update { it.copy(error = e.message) }
             }
         }
@@ -116,5 +124,10 @@ class MapViewModel(
     
     fun stopLocationUpdates() {
         locationManager.stopLocationUpdates()
+    }
+    
+    override fun onCleared() {
+        super.onCleared()
+        stopLocationUpdates()
     }
 }

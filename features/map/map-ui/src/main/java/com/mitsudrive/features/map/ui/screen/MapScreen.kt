@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.sp
 import com.mitsudrive.core.ui.theme.*
 import com.mitsudrive.features.map.api.model.MapEventType
 import com.mitsudrive.features.map.ui.components.EventInfoCard
+import com.mitsudrive.features.map.ui.components.map.OsmMapView
 import com.mitsudrive.features.map.ui.viewmodel.MapViewModel
 
 @Composable
@@ -27,50 +28,27 @@ fun MapScreen(
             .fillMaxSize()
             .background(DarkBackground)
     ) {
-        // Заглушка карты (позже заменим на Google Maps)
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text(
-                text = "🗺️",
-                fontSize = 80.sp
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                text = "Карта событий",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                color = TextPrimary
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = "Интерактивная карта будет добавлена\nв следующей версии",
-                fontSize = 14.sp,
-                color = TextSecondary
-            )
-        }
+        // OpenStreetMap
+        OsmMapView(
+            currentLocation = uiState.currentLocation,
+            events = uiState.events,
+            onEventClick = { event ->
+                viewModel.selectEvent(event)
+            },
+            modifier = Modifier.fillMaxSize()
+        )
         
-        // События (временная сетка)
-        if (uiState.events.isNotEmpty()) {
-            Column(
+        // Панель выбранного события
+        val selectedEvent = uiState.selectedEvent
+        if (selectedEvent != null) {
+            EventInfoCard(
+                event = selectedEvent,
+                onConfirm = { viewModel.confirmEvent(selectedEvent.id) },
+                onClose = { viewModel.selectEvent(null) },
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .align(Alignment.BottomCenter)
                     .padding(16.dp)
-                    .align(Alignment.BottomCenter),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                uiState.events.take(3).forEach { event ->
-                    EventInfoCard(
-                        event = event,
-                        onConfirm = { viewModel.confirmEvent(event.id) },
-                        onClose = { viewModel.selectEvent(null) }
-                    )
-                }
-            }
+            )
         }
         
         // Кнопки управления
@@ -86,14 +64,24 @@ fun MapScreen(
                 modifier = Modifier.size(56.dp),
                 shape = RoundedCornerShape(Dimens.radius_round),
                 colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = if (uiState.isSosActive) AccentRed else CardBackground,
+                    containerColor = if (uiState.isSosActive) AccentRed else CardBackground.copy(alpha = 0.9f),
                     contentColor = if (uiState.isSosActive) TextPrimary else TextSecondary
                 )
             ) {
-                Text(
-                    text = "🆘",
-                    fontSize = 24.sp
+                Text("🆘", fontSize = 24.sp)
+            }
+            
+            // Кнопка центрирования
+            FilledIconButton(
+                onClick = { viewModel.startLocationUpdates() },
+                modifier = Modifier.size(48.dp),
+                shape = RoundedCornerShape(Dimens.radius_round),
+                colors = IconButtonDefaults.filledIconButtonColors(
+                    containerColor = CardBackground.copy(alpha = 0.9f),
+                    contentColor = TextPrimary
                 )
+            ) {
+                Text("📍", fontSize = 20.sp)
             }
             
             // Кнопка добавления события
@@ -106,10 +94,7 @@ fun MapScreen(
                     contentColor = DarkBackground
                 )
             ) {
-                Text(
-                    text = "➕",
-                    fontSize = 24.sp
-                )
+                Text("➕", fontSize = 24.sp)
             }
         }
         
@@ -122,45 +107,49 @@ fun MapScreen(
                     .padding(16.dp),
                 shape = RoundedCornerShape(Dimens.radius_lg),
                 colors = CardDefaults.cardColors(
-                    containerColor = CardBackground
+                    containerColor = CardBackground.copy(alpha = 0.95f)
                 )
             ) {
                 Column(
                     modifier = Modifier.padding(Dimens.spacing_lg)
                 ) {
-                    Text(
-                        text = "Добавить событие",
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = TextPrimary
-                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            "Добавить событие",
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = TextPrimary
+                        )
+                        
+                        Text(
+                            "✕",
+                            fontSize = 18.sp,
+                            color = TextSecondary,
+                            modifier = Modifier.clickable { viewModel.toggleCreateEvent() }
+                        )
+                    }
                     
                     Spacer(modifier = Modifier.height(Dimens.spacing_md))
                     
-                    // Кнопки типов событий
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        EventTypeButton(
-                            emoji = "🚗",
-                            label = "ДТП",
-                            onClick = { viewModel.createEvent(MapEventType.ACCIDENT, "ДТП") }
-                        )
-                        EventTypeButton(
-                            emoji = "📸",
-                            label = "Камера",
-                            onClick = { viewModel.createEvent(MapEventType.CAMERA, "Камера") }
-                        )
-                        EventTypeButton(
-                            emoji = "🚦",
-                            label = "Пробка",
-                            onClick = { viewModel.createEvent(MapEventType.TRAFFIC, "Пробка") }
-                        )
-                        EventTypeButton(
-                            emoji = "⚠️",
-                            label = "Опасно",
-                            onClick = { viewModel.createEvent(MapEventType.DANGER, "Опасность") }
-                        )
+                        EventTypeButton("🚗", "ДТП") { 
+                            viewModel.createEvent(MapEventType.ACCIDENT, "ДТП")
+                        }
+                        EventTypeButton("📸", "Камера") {
+                            viewModel.createEvent(MapEventType.CAMERA, "Камера")
+                        }
+                        EventTypeButton("🚦", "Пробка") {
+                            viewModel.createEvent(MapEventType.TRAFFIC, "Пробка")
+                        }
+                        EventTypeButton("⚠️", "Опасно") {
+                            viewModel.createEvent(MapEventType.DANGER, "Опасность")
+                        }
                     }
                 }
             }
@@ -175,6 +164,11 @@ fun MapScreen(
                 modifier = Modifier
                     .align(Alignment.TopCenter)
                     .padding(16.dp)
+                    .background(
+                        CardBackground.copy(alpha = 0.8f),
+                        RoundedCornerShape(Dimens.radius_md)
+                    )
+                    .padding(12.dp)
             )
         }
     }
@@ -189,24 +183,15 @@ private fun EventTypeButton(
     Card(
         modifier = Modifier.clickable(onClick = onClick),
         shape = RoundedCornerShape(Dimens.radius_md),
-        colors = CardDefaults.cardColors(
-            containerColor = DarkBackground
-        )
+        colors = CardDefaults.cardColors(containerColor = DarkBackground)
     ) {
         Column(
             modifier = Modifier.padding(Dimens.spacing_md),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
-                text = emoji,
-                fontSize = 24.sp
-            )
+            Text(emoji, fontSize = 24.sp)
             Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = label,
-                fontSize = 12.sp,
-                color = TextSecondary
-            )
+            Text(label, fontSize = 11.sp, color = TextSecondary)
         }
     }
 }

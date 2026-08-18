@@ -51,6 +51,9 @@ dependencies {
     implementation(project(":core:core-ui"))
     implementation(project(":core:core-location"))
 
+    // osmdroid — OpenStreetMap
+    implementation("org.osmdroid:osmdroid-android:6.1.18")
+
     // AndroidX
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
