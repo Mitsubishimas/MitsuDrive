@@ -4,12 +4,12 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -41,6 +41,13 @@ fun MainScreen() {
     
     Scaffold(
         containerColor = DarkBackground,
+        topBar = {
+            TopBar(
+                onSettingsClick = {
+                    navController.navigate(Screen.Settings.route)
+                }
+            )
+        },
         bottomBar = {
             BottomNavigationBar(navController)
         }
@@ -52,6 +59,35 @@ fun MainScreen() {
         ) {
             DriveNavigation(navController = navController)
         }
+    }
+}
+
+@Composable
+fun TopBar(
+    onSettingsClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(CardBackground)
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            text = "MitsuDrive",
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Black,
+            color = NeonBlue
+        )
+        
+        Text(
+            text = "⚙️",
+            fontSize = 22.sp,
+            modifier = Modifier
+                .clickable { onSettingsClick() }
+                .padding(8.dp)
+        )
     }
 }
 
@@ -68,110 +104,80 @@ fun BottomNavigationBar(navController: NavHostController) {
             selected = currentRoute == Screen.Feed.route,
             onClick = {
                 navController.navigate(Screen.Feed.route) {
-                    popUpTo(navController.graph.startDestinationId) {
-                        saveState = true
-                    }
+                    popUpTo(navController.graph.startDestinationId) { saveState = true }
                     launchSingleTop = true
                     restoreState = true
                 }
             },
             icon = { Text("📰", fontSize = 20.sp) },
             label = { Text("Лента", fontSize = 10.sp) },
-            colors = NavigationBarItemDefaults.colors(
-                selectedIconColor = NeonBlue,
-                selectedTextColor = NeonBlue,
-                unselectedIconColor = TextSecondary,
-                unselectedTextColor = TextSecondary,
-                indicatorColor = NeonBlue.copy(alpha = 0.1f)
-            )
+            colors = navItemColors(NeonBlue)
         )
         
         NavigationBarItem(
             selected = currentRoute == Screen.Map.route,
             onClick = {
                 navController.navigate(Screen.Map.route) {
-                    popUpTo(navController.graph.startDestinationId) {
-                        saveState = true
-                    }
+                    popUpTo(navController.graph.startDestinationId) { saveState = true }
                     launchSingleTop = true
                     restoreState = true
                 }
             },
             icon = { Text("🗺️", fontSize = 20.sp) },
             label = { Text("Карта", fontSize = 10.sp) },
-            colors = NavigationBarItemDefaults.colors(
-                selectedIconColor = NeonBlue,
-                selectedTextColor = NeonBlue,
-                unselectedIconColor = TextSecondary,
-                unselectedTextColor = TextSecondary,
-                indicatorColor = NeonBlue.copy(alpha = 0.1f)
-            )
+            colors = navItemColors(NeonBlue)
         )
         
         NavigationBarItem(
             selected = currentRoute == Screen.Chats.route,
             onClick = {
                 navController.navigate(Screen.Chats.route) {
-                    popUpTo(navController.graph.startDestinationId) {
-                        saveState = true
-                    }
+                    popUpTo(navController.graph.startDestinationId) { saveState = true }
                     launchSingleTop = true
                     restoreState = true
                 }
             },
             icon = { Text("💬", fontSize = 20.sp) },
             label = { Text("Чаты", fontSize = 10.sp) },
-            colors = NavigationBarItemDefaults.colors(
-                selectedIconColor = NeonBlue,
-                selectedTextColor = NeonBlue,
-                unselectedIconColor = TextSecondary,
-                unselectedTextColor = TextSecondary,
-                indicatorColor = NeonBlue.copy(alpha = 0.1f)
-            )
+            colors = navItemColors(NeonBlue)
         )
         
         NavigationBarItem(
             selected = currentRoute == Screen.Garage.route,
             onClick = {
                 navController.navigate(Screen.Garage.route) {
-                    popUpTo(navController.graph.startDestinationId) {
-                        saveState = true
-                    }
+                    popUpTo(navController.graph.startDestinationId) { saveState = true }
                     launchSingleTop = true
                     restoreState = true
                 }
             },
             icon = { Text("🚗", fontSize = 20.sp) },
             label = { Text("Гараж", fontSize = 10.sp) },
-            colors = NavigationBarItemDefaults.colors(
-                selectedIconColor = NeonBlue,
-                selectedTextColor = NeonBlue,
-                unselectedIconColor = TextSecondary,
-                unselectedTextColor = TextSecondary,
-                indicatorColor = NeonBlue.copy(alpha = 0.1f)
-            )
+            colors = navItemColors(NeonBlue)
         )
         
         NavigationBarItem(
             selected = currentRoute == Screen.Sos.route,
             onClick = {
                 navController.navigate(Screen.Sos.route) {
-                    popUpTo(navController.graph.startDestinationId) {
-                        saveState = true
-                    }
+                    popUpTo(navController.graph.startDestinationId) { saveState = true }
                     launchSingleTop = true
                     restoreState = true
                 }
             },
             icon = { Text("🆘", fontSize = 20.sp) },
             label = { Text("SOS", fontSize = 10.sp) },
-            colors = NavigationBarItemDefaults.colors(
-                selectedIconColor = AccentRed,
-                selectedTextColor = AccentRed,
-                unselectedIconColor = TextSecondary,
-                unselectedTextColor = TextSecondary,
-                indicatorColor = AccentRed.copy(alpha = 0.1f)
-            )
+            colors = navItemColors(AccentRed)
         )
     }
 }
+
+@Composable
+private fun navItemColors(selectedColor: androidx.compose.ui.graphics.Color) =
+    NavigationBarItemDefaults.colors(
+        selectedIconColor = selectedColor,
+        selectedTextColor = selectedColor,
+        unselectedIconColor = TextSecondary,
+        unselectedTextColor = TextSecondary,
+        indicatorColor = selectedColor.copy(alpha = 0.1f)
+    )

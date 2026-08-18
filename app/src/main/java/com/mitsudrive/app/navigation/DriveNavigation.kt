@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.mitsudrive.app.routes.*
+import com.mitsudrive.app.settings.SettingsScreen
 
 sealed class Screen(val route: String) {
     object Feed : Screen("feed")
@@ -16,7 +17,7 @@ sealed class Screen(val route: String) {
     }
     object Garage : Screen("garage")
     object Sos : Screen("sos")
-    object Profile : Screen("profile")
+    object Settings : Screen("settings")
 }
 
 @Composable
@@ -72,9 +73,11 @@ fun DriveNavigation(
             SosRoute()
         }
         
-        // Профиль
-        composable(Screen.Profile.route) {
-            ProfileRoute()
+        // Настройки
+        composable(Screen.Settings.route) {
+            SettingsScreen(
+                onBack = { navController.popBackStack() }
+            )
         }
     }
 }

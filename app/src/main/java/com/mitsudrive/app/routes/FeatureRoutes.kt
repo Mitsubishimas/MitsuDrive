@@ -1,6 +1,5 @@
 package com.mitsudrive.app.routes
 
-import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -9,6 +8,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.material3.Text
 import com.mitsudrive.core.location.LocationManager
 import com.mitsudrive.core.ui.theme.TextPrimary
 import com.mitsudrive.features.chat.impl.repository.ChatRepositoryImpl
@@ -28,7 +28,6 @@ import com.mitsudrive.features.map.ui.viewmodel.MapViewModel
 import com.mitsudrive.features.sos.impl.repository.SosRepositoryImpl
 import com.mitsudrive.features.sos.ui.screen.SosScreen
 import com.mitsudrive.features.sos.ui.viewmodel.SosViewModel
-import androidx.compose.material3.Text
 
 // ==================== FEED ====================
 
@@ -41,6 +40,11 @@ fun FeedRoute(
     val viewModel: FeedViewModel = viewModel(
         factory = FeedViewModelFactory(repository)
     )
+    
+    // Загружаем ленту при первом запуске
+    LaunchedEffect(Unit) {
+        viewModel.refresh()
+    }
     
     FeedScreen(
         viewModel = viewModel,
@@ -73,6 +77,11 @@ fun ChatListRoute(
     val viewModel: ChatListViewModel = viewModel(
         factory = ChatListViewModelFactory(repository)
     )
+    
+    // Загружаем чаты при первом запуске
+    LaunchedEffect(Unit) {
+        repository.createMockChatsForDemo()
+    }
     
     ChatListScreen(
         viewModel = viewModel,
@@ -107,9 +116,9 @@ fun GarageRoute() {
         factory = GarageViewModelFactory(repository)
     )
     
-    // Загружаем начальные данные
+    // Загружаем демо-данные при первом запуске
     LaunchedEffect(Unit) {
-        (repository as? GarageRepositoryImpl)?.loadInitialData()
+        repository.loadInitialData()
     }
     
     GarageScreen(viewModel = viewModel)
@@ -125,6 +134,11 @@ fun SosRoute() {
     val viewModel: SosViewModel = viewModel(
         factory = SosViewModelFactory(repository, locationManager)
     )
+    
+    // Загружаем активные SOS
+    LaunchedEffect(Unit) {
+        repository.loadActiveAlerts()
+    }
     
     SosScreen(viewModel = viewModel)
 }

@@ -1,7 +1,4 @@
 plugins {
-    id("com.google.gms.google-services")
-}
-plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.dagger.hilt.android")
@@ -105,7 +102,6 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
     implementation("androidx.activity:activity-compose:1.8.2")
-    implementation("androidx.core:core-splashscreen:1.0.1")
 
     // Compose
     implementation(platform("androidx.compose:compose-bom:2024.01.00"))
@@ -128,6 +124,9 @@ dependencies {
     implementation("androidx.room:room-ktx:2.6.1")
     ksp("androidx.room:room-compiler:2.6.1")
 
+    // Splash Screen
+    implementation("androidx.core:core-splashscreen:1.0.1")
+
     // Testing
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
@@ -137,11 +136,3 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 }
-
-// Добавляем в dependencies если ещё не добавлено
-// implementation("androidx.core:core-splashscreen:1.0.1")
-
-// Firebase
-// implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
-// implementation("com.google.firebase:firebase-messaging-ktx")
-// implementation("com.google.firebase:firebase-analytics-ktx")

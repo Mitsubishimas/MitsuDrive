@@ -230,6 +230,118 @@ class ChatRepositoryImpl : ChatRepository {
         }
     }
     
+    
+    // Создание демо-чатов
+    suspend fun createMockChatsForDemo() {
+        if (_chats.value.isNotEmpty()) return
+        
+        val mockChats = listOf(
+            com.mitsudrive.features.chat.api.model.ChatRoom(
+                id = "chat_demo_1",
+                chatType = com.mitsudrive.features.chat.api.model.ChatType.PRIVATE,
+                title = "Дмитрий",
+                avatarUrl = null,
+                lastMessage = com.mitsudrive.features.chat.api.model.ChatMessage(
+                    id = "msg_last_1",
+                    chatId = "chat_demo_1",
+                    senderId = "user_1",
+                    senderName = "Дмитрий",
+                    senderAvatarUrl = null,
+                    messageType = com.mitsudrive.features.chat.api.model.MessageType.TEXT,
+                    content = "Привет! Как дела с вариатором?",
+                    mediaId = null,
+                    mediaCaption = null,
+                    lat = null,
+                    lng = null,
+                    createdAt = System.currentTimeMillis().toString(),
+                    updatedAt = null,
+                    isEdited = false,
+                    status = com.mitsudrive.features.chat.api.model.MessageStatus.READ,
+                    replyTo = null,
+                    isPending = false
+                ),
+                unreadCount = 2,
+                participantsCount = 2,
+                isMuted = false,
+                isPinned = true,
+                isArchived = false,
+                updatedAt = System.currentTimeMillis().toString()
+            ),
+            com.mitsudrive.features.chat.api.model.ChatRoom(
+                id = "chat_demo_2",
+                chatType = com.mitsudrive.features.chat.api.model.ChatType.GROUP,
+                title = "Mitsubishi Club",
+                avatarUrl = null,
+                lastMessage = com.mitsudrive.features.chat.api.model.ChatMessage(
+                    id = "msg_last_2",
+                    chatId = "chat_demo_2",
+                    senderId = "user_2",
+                    senderName = "Алексей",
+                    senderAvatarUrl = null,
+                    messageType = com.mitsudrive.features.chat.api.model.MessageType.TEXT,
+                    content = "Кто едет на встречу в субботу?",
+                    mediaId = null,
+                    mediaCaption = null,
+                    lat = null,
+                    lng = null,
+                    createdAt = System.currentTimeMillis().toString(),
+                    updatedAt = null,
+                    isEdited = false,
+                    status = com.mitsudrive.features.chat.api.model.MessageStatus.DELIVERED,
+                    replyTo = null,
+                    isPending = false
+                ),
+                unreadCount = 5,
+                participantsCount = 12,
+                isMuted = false,
+                isPinned = false,
+                isArchived = false,
+                updatedAt = System.currentTimeMillis().toString()
+            ),
+            com.mitsudrive.features.chat.api.model.ChatRoom(
+                id = "chat_demo_3",
+                chatType = com.mitsudrive.features.chat.api.model.ChatType.CITY,
+                title = "Москва",
+                avatarUrl = null,
+                lastMessage = com.mitsudrive.features.chat.api.model.ChatMessage(
+                    id = "msg_last_3",
+                    chatId = "chat_demo_3",
+                    senderId = "user_3",
+                    senderName = "Сергей",
+                    senderAvatarUrl = null,
+                    messageType = com.mitsudrive.features.chat.api.model.MessageType.TEXT,
+                    content = "На МКАДе пробка 10 км",
+                    mediaId = null,
+                    mediaCaption = null,
+                    lat = null,
+                    lng = null,
+                    createdAt = System.currentTimeMillis().toString(),
+                    updatedAt = null,
+                    isEdited = false,
+                    status = com.mitsudrive.features.chat.api.model.MessageStatus.DELIVERED,
+                    replyTo = null,
+                    isPending = false
+                ),
+                unreadCount = 0,
+                participantsCount = 156,
+                isMuted = true,
+                isPinned = false,
+                isArchived = false,
+                updatedAt = System.currentTimeMillis().toString()
+            )
+        )
+        
+        _chats.value = mockChats
+        
+        // Создаём сообщения для демо-чатов
+        mockChats.forEach { chat ->
+            val messages = createMockMessages(chat.id)
+            _messages.update { current ->
+                current + (chat.id to messages)
+            }
+        }
+    }
+    
     private fun createMockMessages(chatId: String): List<ChatMessage> {
         return listOf(
             ChatMessage(
