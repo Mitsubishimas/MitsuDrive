@@ -1,6 +1,7 @@
 package com.mitsudrive.features.auth.ui.screen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -8,7 +9,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -18,14 +18,14 @@ import com.mitsudrive.core.ui.components.DriveTextField
 import com.mitsudrive.core.ui.components.GhostButton
 import com.mitsudrive.core.ui.components.NeonButton
 import com.mitsudrive.core.ui.theme.*
-import com.mitsudrive.features.auth.ui.viewmodel.LoginUiState
 import com.mitsudrive.features.auth.ui.viewmodel.LoginViewModel
 
 @Composable
 fun LoginScreen(
     viewModel: LoginViewModel,
     onLoginSuccess: () -> Unit,
-    onNavigateToRegister: () -> Unit
+    onNavigateToRegister: () -> Unit,
+    onNavigateToForgotPassword: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
     
@@ -47,9 +47,8 @@ fun LoginScreen(
                 .padding(horizontal = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(80.dp))
+            Spacer(modifier = Modifier.height(60.dp))
             
-            // Логотип
             Text(
                 text = "MitsuDrive",
                 fontSize = 48.sp,
@@ -60,47 +59,28 @@ fun LoginScreen(
             Spacer(modifier = Modifier.height(8.dp))
             
             Text(
-                text = "Сообщество автомобилистов",
+                text = "Вход в аккаунт",
                 fontSize = 16.sp,
                 color = TextSecondary
             )
             
-            Spacer(modifier = Modifier.height(48.dp))
+            Spacer(modifier = Modifier.height(40.dp))
             
-            // Форма логина
-            Text(
-                text = "Вход",
-                fontSize = 28.sp,
-                fontWeight = FontWeight.Bold,
-                color = TextPrimary,
-                modifier = Modifier.fillMaxWidth()
-            )
-            
-            Spacer(modifier = Modifier.height(24.dp))
-            
-            // Поле телефона
             DriveTextField(
-                value = uiState.phone,
-                onValueChange = viewModel::onPhoneChange,
-                placeholder = "Номер телефона",
-                leadingIcon = {
-                    Text(
-                        text = "📱",
-                        fontSize = 16.sp
-                    )
-                }
+                value = uiState.email,
+                onValueChange = viewModel::onEmailChange,
+                placeholder = "Email",
+                leadingIcon = { Text("📧", fontSize = 16.sp) }
             )
             
             Spacer(modifier = Modifier.height(16.dp))
             
-            // Поле пароля
             DrivePasswordField(
                 value = uiState.password,
                 onValueChange = viewModel::onPasswordChange,
                 placeholder = "Пароль"
             )
             
-            // Ошибка
             if (uiState.error != null) {
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
@@ -112,9 +92,19 @@ fun LoginScreen(
                 )
             }
             
+            Spacer(modifier = Modifier.height(8.dp))
+            
+            Text(
+                text = "Забыли пароль?",
+                fontSize = 14.sp,
+                color = NeonBlue,
+                modifier = Modifier
+                    .clickable { onNavigateToForgotPassword() }
+                    .padding(4.dp)
+            )
+            
             Spacer(modifier = Modifier.height(24.dp))
             
-            // Кнопка входа
             NeonButton(
                 text = "Войти",
                 onClick = viewModel::login,
@@ -123,7 +113,6 @@ fun LoginScreen(
             
             Spacer(modifier = Modifier.height(16.dp))
             
-            // Кнопка регистрации
             GhostButton(
                 text = "Создать аккаунт",
                 onClick = onNavigateToRegister
@@ -131,9 +120,8 @@ fun LoginScreen(
             
             Spacer(modifier = Modifier.height(32.dp))
             
-            // Информация
             Text(
-                text = "Присоединяйтесь к сообществу водителей\nДелитесь информацией и помогайте друг другу",
+                text = "Входя в аккаунт, вы соглашаетесь с условиями\nиспользования и политикой конфиденциальности",
                 fontSize = 12.sp,
                 color = TextTertiary,
                 textAlign = TextAlign.Center,

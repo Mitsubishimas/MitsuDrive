@@ -38,6 +38,7 @@ android {
 dependencies {
     // AndroidX Core
     implementation("androidx.core:core-ktx:1.12.0")
+    implementation(project(":core:core-network"))
 
     // DataStore для хранения токенов
     implementation("androidx.datastore:datastore-preferences:1.0.0")

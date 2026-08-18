@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 data class LoginUiState(
-    val phone: String = "",
+    val email: String = "",
     val password: String = "",
     val isLoading: Boolean = false,
     val error: String? = null,
@@ -21,8 +21,8 @@ class LoginViewModel(
     private val _uiState = MutableStateFlow(LoginUiState())
     val uiState: StateFlow<LoginUiState> = _uiState.asStateFlow()
     
-    fun onPhoneChange(phone: String) {
-        _uiState.update { it.copy(phone = phone, error = null) }
+    fun onEmailChange(email: String) {
+        _uiState.update { it.copy(email = email, error = null) }
     }
     
     fun onPasswordChange(password: String) {
@@ -32,8 +32,13 @@ class LoginViewModel(
     fun login() {
         val state = _uiState.value
         
-        if (state.phone.isBlank()) {
-            _uiState.update { it.copy(error = "Введите номер телефона") }
+        if (state.email.isBlank()) {
+            _uiState.update { it.copy(error = "Введите email") }
+            return
+        }
+        
+        if (!state.email.contains("@")) {
+            _uiState.update { it.copy(error = "Введите корректный email") }
             return
         }
         
@@ -45,21 +50,13 @@ class LoginViewModel(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
             
-            authRepository.login(state.phone, state.password)
+            authRepository.login(state.email, state.password)
                 .onSuccess {
-                    _uiState.update { 
-                        it.copy(
-                            isLoading = false,
-                            isSuccess = true
-                        )
-                    }
+                    _uiState.update { it.copy(isLoading = false, isSuccess = true) }
                 }
                 .onFailure { e ->
                     _uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            error = e.message ?: "Ошибка входа"
-                        )
+                        it.copy(isLoading = false, error = e.message ?: "Ошибка входа")
                     }
                 }
         }

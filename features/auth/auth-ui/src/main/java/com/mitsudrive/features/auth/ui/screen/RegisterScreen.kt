@@ -1,6 +1,7 @@
 package com.mitsudrive.features.auth.ui.screen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -12,10 +13,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.mitsudrive.core.ui.components.DrivePasswordField
-import com.mitsudrive.core.ui.components.DriveTextField
-import com.mitsudrive.core.ui.components.GhostButton
-import com.mitsudrive.core.ui.components.NeonButton
+import com.mitsudrive.core.ui.components.*
 import com.mitsudrive.core.ui.theme.*
 import com.mitsudrive.features.auth.ui.viewmodel.RegisterViewModel
 
@@ -45,9 +43,8 @@ fun RegisterScreen(
                 .padding(horizontal = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(60.dp))
+            Spacer(modifier = Modifier.height(50.dp))
             
-            // Логотип
             Text(
                 text = "MitsuDrive",
                 fontSize = 40.sp,
@@ -67,51 +64,76 @@ fun RegisterScreen(
             
             Spacer(modifier = Modifier.height(24.dp))
             
-            // Поле телефона
+            // Email
+            DriveTextField(
+                value = uiState.email,
+                onValueChange = viewModel::onEmailChange,
+                placeholder = "Email",
+                leadingIcon = { Text("📧", fontSize = 16.sp) }
+            )
+            
+            Spacer(modifier = Modifier.height(12.dp))
+            
+            // Имя
+            DriveTextField(
+                value = uiState.name,
+                onValueChange = viewModel::onNameChange,
+                placeholder = "Имя пользователя",
+                leadingIcon = { Text("👤", fontSize = 16.sp) }
+            )
+            
+            Spacer(modifier = Modifier.height(12.dp))
+            
+            // Телефон
             DriveTextField(
                 value = uiState.phone,
                 onValueChange = viewModel::onPhoneChange,
-                placeholder = "Номер телефона",
-                leadingIcon = {
-                    Text(
-                        text = "📱",
-                        fontSize = 16.sp
-                    )
-                }
+                placeholder = "Телефон (+7...)",
+                leadingIcon = { Text("📱", fontSize = 16.sp) }
             )
             
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(12.dp))
             
-            // Поле имени
-            DriveTextField(
-                value = uiState.username,
-                onValueChange = viewModel::onUsernameChange,
-                placeholder = "Имя пользователя",
-                leadingIcon = {
-                    Text(
-                        text = "👤",
-                        fontSize = 16.sp
-                    )
-                }
-            )
-            
-            Spacer(modifier = Modifier.height(16.dp))
-            
-            // Поле пароля
+            // Пароль
             DrivePasswordField(
                 value = uiState.password,
                 onValueChange = viewModel::onPasswordChange,
                 placeholder = "Пароль (мин. 6 символов)"
             )
             
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(12.dp))
             
-            // Поле подтверждения пароля
+            // Подтверждение пароля
             DrivePasswordField(
                 value = uiState.confirmPassword,
                 onValueChange = viewModel::onConfirmPasswordChange,
                 placeholder = "Подтвердите пароль"
             )
+            
+            // SMS код (если отправлен)
+            if (uiState.isSmsSent) {
+                Spacer(modifier = Modifier.height(16.dp))
+                
+                DriveTextField(
+                    value = uiState.smsCode,
+                    onValueChange = viewModel::onSmsCodeChange,
+                    placeholder = "Код из SMS",
+                    leadingIcon = { Text("🔑", fontSize = 16.sp) }
+                )
+                
+                Spacer(modifier = Modifier.height(8.dp))
+                
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Text(
+                        text = "Отправить код повторно",
+                        fontSize = 14.sp,
+                        color = NeonBlue,
+                        modifier = Modifier.clickable { viewModel.resendSms() }
+                    )
+                }
+            }
             
             // Ошибка
             if (uiState.error != null) {
@@ -127,16 +149,23 @@ fun RegisterScreen(
             
             Spacer(modifier = Modifier.height(24.dp))
             
-            // Кнопка регистрации
-            NeonButton(
-                text = "Зарегистрироваться",
-                onClick = viewModel::register,
-                loading = uiState.isLoading
-            )
+            // Кнопка
+            if (!uiState.isSmsSent) {
+                NeonButton(
+                    text = "Отправить SMS код",
+                    onClick = viewModel::sendSms,
+                    loading = uiState.isLoading
+                )
+            } else {
+                NeonButton(
+                    text = "Подтвердить и зарегистрироваться",
+                    onClick = viewModel::register,
+                    loading = uiState.isLoading
+                )
+            }
             
             Spacer(modifier = Modifier.height(16.dp))
             
-            // Кнопка входа
             GhostButton(
                 text = "Уже есть аккаунт",
                 onClick = onNavigateToLogin
@@ -144,9 +173,8 @@ fun RegisterScreen(
             
             Spacer(modifier = Modifier.height(32.dp))
             
-            // Условия
             Text(
-                text = "Регистрируясь, вы соглашаетесь с\nусловиями использования и политикой конфиденциальности",
+                text = "Регистрируясь, вы соглашаетесь с условиями\nиспользования и политикой конфиденциальности",
                 fontSize = 12.sp,
                 color = TextTertiary,
                 textAlign = TextAlign.Center,
