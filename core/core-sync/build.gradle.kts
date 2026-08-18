@@ -36,6 +36,19 @@ android {
 }
 
 dependencies {
+    // AndroidX Core
     implementation("androidx.core:core-ktx:1.12.0")
+
+    // WorkManager
+    implementation("androidx.work:work-runtime-ktx:2.9.0")
+
+    // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+
+    // Зависимость от core-database
+    implementation(project(":core:core-database"))
+
+    // Testing
+    testImplementation("junit:junit:4.13.2")
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
 }
