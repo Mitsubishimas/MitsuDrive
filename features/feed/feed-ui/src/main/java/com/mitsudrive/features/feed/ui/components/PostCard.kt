@@ -11,11 +11,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.mitsudrive.core.ui.components.Avatar
 import com.mitsudrive.core.ui.components.EventTypeBadge
+import com.mitsudrive.core.ui.components.PostImage
 import com.mitsudrive.core.ui.theme.*
 import com.mitsudrive.features.feed.api.model.Post
 import com.mitsudrive.features.feed.api.model.PostType
@@ -46,20 +47,11 @@ fun PostCard(
                 horizontalArrangement = Arrangement.spacedBy(Dimens.spacing_sm)
             ) {
                 // Аватар
-                Box(
-                    modifier = Modifier
-                        .size(Dimens.avatar_md)
-                        .clip(CircleShape)
-                        .background(NeonBlue.copy(alpha = 0.2f)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = post.username.firstOrNull()?.toString() ?: "?",
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = NeonBlue
-                    )
-                }
+                Avatar(
+                    imageUrl = post.userAvatarUrl,
+                    username = post.username,
+                    size = 40
+                )
                 
                 Column {
                     Text(
@@ -96,23 +88,10 @@ fun PostCard(
                 color = TextPrimary
             )
             
-            // Изображение (если есть)
-            if (post.imageUrl != null) {
+            // Изображение
+            post.imageUrl?.let { imageUrl ->
                 Spacer(modifier = Modifier.height(Dimens.spacing_md))
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(180.dp)
-                        .clip(RoundedCornerShape(Dimens.radius_md))
-                        .background(CardBackground)
-                ) {
-                    // TODO: Загрузка изображения через Coil
-                    Text(
-                        text = "📷",
-                        fontSize = 48.sp,
-                        modifier = Modifier.align(Alignment.Center)
-                    )
-                }
+                PostImage(imageUrl = imageUrl)
             }
             
             Spacer(modifier = Modifier.height(Dimens.spacing_md))
@@ -144,10 +123,7 @@ fun PostCard(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(Dimens.spacing_xs)
                 ) {
-                    Text(
-                        text = "💬",
-                        fontSize = 16.sp
-                    )
+                    Text("💬", fontSize = 16.sp)
                     Text(
                         text = post.commentsCount.toString(),
                         fontSize = 13.sp,

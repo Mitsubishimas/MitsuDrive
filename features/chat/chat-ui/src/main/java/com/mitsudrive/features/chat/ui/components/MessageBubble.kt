@@ -8,10 +8,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.mitsudrive.core.ui.components.Avatar
 import com.mitsudrive.core.ui.theme.*
 import com.mitsudrive.features.chat.api.model.ChatMessage
 import com.mitsudrive.features.chat.api.model.MessageStatus
@@ -29,11 +29,21 @@ fun MessageBubble(
             .padding(horizontal = 12.dp, vertical = 4.dp),
         horizontalArrangement = if (isCurrentUser) Arrangement.End else Arrangement.Start
     ) {
+        // Аватар (для чужих сообщений)
+        if (!isCurrentUser) {
+            Avatar(
+                imageUrl = message.senderAvatarUrl,
+                username = message.senderName,
+                size = 32
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+        }
+        
         Column(
             horizontalAlignment = if (isCurrentUser) Alignment.End else Alignment.Start,
             modifier = Modifier.widthIn(max = 280.dp)
         ) {
-            // Имя отправителя (для групповых чатов)
+            // Имя отправителя
             if (!isCurrentUser) {
                 Text(
                     text = message.senderName,
@@ -60,7 +70,6 @@ fun MessageBubble(
                     )
                     .padding(horizontal = 14.dp, vertical = 10.dp)
             ) {
-                // Контент сообщения
                 when (message.messageType) {
                     MessageType.TEXT -> {
                         Text(
@@ -72,11 +81,7 @@ fun MessageBubble(
                     }
                     
                     MessageType.LOCATION -> {
-                        Text(
-                            text = "📍 Локация",
-                            fontSize = 14.sp,
-                            color = NeonBlue
-                        )
+                        Text("📍 Локация", fontSize = 14.sp, color = NeonBlue)
                     }
                     
                     MessageType.SYSTEM -> {
@@ -88,11 +93,7 @@ fun MessageBubble(
                     }
                     
                     else -> {
-                        Text(
-                            text = "📎 Файл",
-                            fontSize = 14.sp,
-                            color = TextPrimary
-                        )
+                        Text("📎 Файл", fontSize = 14.sp, color = TextPrimary)
                     }
                 }
                 
@@ -120,7 +121,6 @@ fun MessageBubble(
                 }
             }
             
-            // Пометка "изменено"
             if (message.isEdited) {
                 Text(
                     text = "изменено",
