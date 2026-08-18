@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="neon_blue">#00D2FF</color>
+    <color name="accent_red">#E94560</color>
+    <color name="dark_background">#060912</color>
+    <color name="card_background">#0D111F</color>
+    <color name="border_color">#1A2240</color>
+    <color name="text_primary">#E0E6F0</color>
+    <color name="text_secondary">#6B7394</color>
+</resources>
