@@ -14,11 +14,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.mitsudrive.app.ui.theme.MitsuDriveTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         // Устанавливаем Splash Screen
-        val splashScreen = installSplashScreen()
+        installSplashScreen()
         
         super.onCreate(savedInstanceState)
         
