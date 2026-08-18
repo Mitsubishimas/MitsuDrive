@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="800dp"
+    android:height="400dp"
+    android:viewportWidth="800"
+    android:viewportHeight="400">
+
+    <!-- Верхний ромб -->
+    <path
+        android:strokeColor="#00e5ff"
+        android:strokeWidth="3.5"
+        android:strokeLineJoin="round"
+        android:fillColor="#00000000"
+        android:pathData="M130,70 L170,100 L130,130 L90,100 Z"/>
+
+    <!-- Левый нижний ромб -->
+    <path
+        android:strokeColor="#00e5ff"
+        android:strokeWidth="3.5"
+        android:strokeLineJoin="round"
+        android:fillColor="#00000000"
+        android:pathData="M100,140 L140,170 L100,200 L60,170 Z"/>
+
+    <!-- Правый нижний ромб -->
+    <path
+        android:strokeColor="#00e5ff"
+        android:strokeWidth="3.5"
+        android:strokeLineJoin="round"
+        android:fillColor="#00000000"
+        android:pathData="M160,140 L200,170 L160,200 L120,170 Z"/>
+
+    <!-- Соединительные линии -->
+    <path
+        android:strokeColor="#00e5ff"
+        android:strokeWidth="2"
+        android:strokeAlpha="0.7"
+        android:fillColor="#00000000"
+        android:pathData="M130,100 L130,155 M100,170 L115,170 M145,170 L160,170"/>
+
+    <!-- Дорожная разметка -->
+    <path
+        android:strokeColor="#00e5ff"
+        android:strokeWidth="2.5"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000"
+        android:pathData="M240,255 L340,255 M355,255 L455,255 M470,255 L570,255 M585,255 L685,255"/>
+
+    <!-- Декоративные уголки -->
+    <path
+        android:strokeColor="#00e5ff"
+        android:strokeWidth="2"
+        android:strokeAlpha="0.35"
+        android:fillColor="#00000000"
+        android:pathData="M30,40 L30,90 L80,90 M770,40 L770,90 L720,90 M30,360 L30,310 L80,310 M770,360 L770,310 L720,310"/>
+</vector>

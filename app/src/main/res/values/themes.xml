@@ -1,8 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Основная тема -->
     <style name="Theme.MitsuDrive" parent="android:Theme.Material.NoActionBar">
         <item name="android:statusBarColor">#060912</item>
         <item name="android:navigationBarColor">#060912</item>
         <item name="android:windowBackground">#060912</item>
+    </style>
+
+    <!-- Тема для Splash Screen -->
+    <style name="Theme.MitsuDrive.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/dark_background</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/splash_logo</item>
+        <item name="windowSplashScreenAnimationDuration">1000</item>
+        <item name="postSplashScreenTheme">@style/Theme.MitsuDrive</item>
     </style>
 </resources>

@@ -101,6 +101,7 @@ dependencies {
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
     implementation("androidx.activity:activity-compose:1.8.2")
+    implementation("androidx.core:core-splashscreen:1.0.1")
 
     // Compose
     implementation(platform("androidx.compose:compose-bom:2024.01.00"))
@@ -132,3 +133,6 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 }
+
+// Добавляем в dependencies если ещё не добавлено
+// implementation("androidx.core:core-splashscreen:1.0.1")
